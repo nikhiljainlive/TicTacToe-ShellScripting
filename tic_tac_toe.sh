@@ -42,5 +42,17 @@ printBoard() {
 	printf "\n\n"
 }
 
+fillBoard() {
+	row=$1
+	column=$2
+	mark=$3
+	
+	board[$row,$column]=$mark			
+}
+
 initBoard
+printBoard
+
+fillBoard 0 0 X
+
 printBoard

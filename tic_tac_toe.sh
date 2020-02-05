@@ -16,16 +16,29 @@ initBoard() {
 }
 
 printBoard() {
+	printf "\n\tBoard"
+	printf "\t\t\t\tPosition\n"
 	printf "\n-------------------"
+	printf "\t\t-------------------------"
 	for (( row = 0; row < ROWS; row++ )) do
-		printf "\n|     |     |     |\n"
+		printf "\n|     |     |     |"
+		printf "\t\t|       |       |       |\n"
 		for (( column = 0; column < COLUMNS; column++ )) do 
 			printf "|  ${board[$row,$column]}  "
 		done
+
+		printf "|"
+		printf "\t\t"
+		for (( column = 0; column < COLUMNS; column++ )) do
+			printf "|  $row,$column  "
+		done
 	printf "|"
 	printf "\n|     |     |     |"
+	printf "\t\t|       |       |       |"
 	printf "\n-------------------"
+	printf "\t\t-------------------------"
 	done
+
 	printf "\n\n"
 }
 

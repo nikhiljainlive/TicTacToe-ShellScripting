@@ -50,9 +50,28 @@ fillBoard() {
 	board[$row,$column]=$mark			
 }
 
+checkOccupiedPosition() {
+	row=$1
+	column=$2
+	
+	if [[ ${board[$row,$column]} == $INITIAL_SYMBOL ]]
+	then
+		return 0
+	fi
+	
+	return 1
+}
+
 initBoard
 printBoard
 
 fillBoard 0 0 X
-
 printBoard
+
+checkOccupiedPosition 0 0
+exitCode=$?
+echo "The exit code for 0,0 position if occupied :  $exitCode"
+
+checkOccupiedPosition 0 1
+exitCode=$?
+echo "The exit code for 0,1 position if occupied :  $exitCode"

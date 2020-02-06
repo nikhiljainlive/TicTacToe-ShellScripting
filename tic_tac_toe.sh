@@ -77,6 +77,20 @@ do
 		echo Position is already occupied. Try another position!	
 	else
 		fillBoard $row $column X		
+ 		
+		while :
+      	do
+         	computerRow=$(( $RANDOM % 3 ))
+         	computerColumn=$(( $RANDOM % 3 ))
+
+      	   checkOccupiedPosition $computerRow $computerColumn
+
+         	if [ $? -eq 0 ]
+         	then
+            	fillBoard $computerRow $computerColumn O
+            break
+         fi
+      done
 	fi
 	
 	printBoard

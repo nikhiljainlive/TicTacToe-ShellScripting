@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash -x
+#!/usr/local/bin/bash
 
 #This file contains Tic-Tac-Toe Game logic
 
@@ -65,13 +65,19 @@ checkOccupiedPosition() {
 initBoard
 printBoard
 
-fillBoard 0 0 X
-printBoard
-
-checkOccupiedPosition 0 0
-exitCode=$?
-echo "The exit code for 0,0 position if occupied :  $exitCode"
-
-checkOccupiedPosition 0 1
-exitCode=$?
-echo "The exit code for 0,1 position if occupied :  $exitCode"
+while :
+do
+	read -p "Enter row position : " row
+	read -p "Enter column position : " column
+	
+	checkOccupiedPosition $row $column
+	
+	if [ $? -eq 1 ]
+	then
+		echo Position is already occupied. Try another position!	
+	else
+		fillBoard $row $column X		
+	fi
+	
+	printBoard
+done

@@ -5,12 +5,14 @@
 ROWS=3
 COLUMNS=3
 INITIAL_SYMBOL="-"
-declare -A board
+PLAYER1_SYMBOL="X"
+PLAYER2_SYMBOL="O"
+declare -A BOARD
 
 initBoard() {
 	for (( row = 0; row < ROWS; row++ )); do
 		for (( column = 0; column < COLUMNS; column++ )); do
-			board[$row,$column]=$INITIAL_SYMBOL
+			BOARD[$row,$column]=$INITIAL_SYMBOL
 		done
 	done
 }
@@ -24,7 +26,7 @@ printBoard() {
 		printf "\n|     |     |     |"
 		printf "\t\t|       |       |       |\n"
 		for (( column = 0; column < COLUMNS; column++ )) do 
-			printf "|  ${board[$row,$column]}  "
+			printf "|  ${BOARD[$row,$column]}  "
 		done
 
 		printf "|"
@@ -47,14 +49,14 @@ fillBoard() {
 	column=$2
 	mark=$3
 	
-	board[$row,$column]=$mark			
+	BOARD[$row,$column]=$mark			
 }
 
 checkOccupiedPosition() {
 	row=$1
 	column=$2
 	
-	if [[ ${board[$row,$column]} == $INITIAL_SYMBOL ]]
+	if [[ ${BOARD[$row,$column]} == $INITIAL_SYMBOL ]]
 	then
 		return 0
 	fi
@@ -76,22 +78,22 @@ do
 	then
 		echo Position is already occupied. Try another position!	
 	else
-		fillBoard $row $column X		
+		fillBoard $row $column $PLAYER1_SYMBOL
  		
 		while :
-      	do
-         	computerRow=$(( $RANDOM % 3 ))
-         	computerColumn=$(( $RANDOM % 3 ))
+      do
+         computerRow=$(( $RANDOM % 3 ))
+         computerColumn=$(( $RANDOM % 3 ))
+			
+			checkOccupiedPosition $computerRow $computerColumn
 
-      	   checkOccupiedPosition $computerRow $computerColumn
-
-         	if [ $? -eq 0 ]
-         	then
-            	fillBoard $computerRow $computerColumn O
+			if [ $? -eq 0 ]
+         then
+            fillBoard $computerRow $computerColumn $PLAYER2_SYMBOL
             break
          fi
       done
 	fi
 	
-	printBoard
+	printBoard	
 done

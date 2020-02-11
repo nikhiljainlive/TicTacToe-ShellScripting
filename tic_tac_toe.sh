@@ -121,6 +121,65 @@ checkBoardVerticallyFilled() {
    return 0
 }
 
+checkHorizontalRowsFilled() {
+   column=$1
+   playerSymbol=$2
+   row=0
+   filledRows=0
+   if [[ ${BOARD[$row,$column]} == $playerSymbol ]]
+   then
+      while [[ $row -lt $ROWS ]]
+      do
+         if [[ ${BOARD[$row,$column]} != $playerSymbol ]]
+         then
+            break
+         fi
+         (( row++ ))
+         (( filledRows++ ))
+      done
+   fi
+
+   echo $playerSymbol Filled Rows -  $filledRows
+
+   if [[ $filledRows -eq $ROWS ]]
+   then
+      return 1
+   fi
+   return 0
+}
+
+checkBoardHorizontallyFilled() {
+   column=0
+   player1Count=0
+   player2Count=0
+
+   while [[ $column -lt $COLUMNS ]]
+   do
+      if [[ ${BOARD[$row,$column]} == $INITIAL_SYMBOL ]]
+      then
+         (( column++ ))
+         continue
+      fi
+
+      checkHorizontalRowsFilled $column $PLAYER1_SYMBOL
+      player1Result=$?
+
+      checkHorizontalRowsFilled $column $PLAYER2_SYMBOL
+      player2Result=$?
+
+      if [[ $player1Result -eq 1 ]]
+      then
+         return 1
+      elif [[ $player2Result -eq 1 ]]
+      then
+         return 2
+      fi
+
+      (( column++ ))
+   done
+   return 0
+}
+
 # main
 initBoard
 printBoard
@@ -155,14 +214,17 @@ do
 	
 	printBoard	
 	checkBoardVerticallyFilled
-	result=$?
+	verticallyFilledResult=$?
 
-	if [[ $result -eq 1 ]]
+	checkBoardHorizontallyFilled
+	horizontallyFilledResult=$?
+
+	if [[ $verticallyFilledResult -eq 1 || $horizontallyFilledResult -eq 1 ]]
 	then
 		printf "\nPlayer won\n"
 		echo
 		break
-	elif [[ $result -eq 2 ]]
+	elif [[ $verticallyFilledResult -eq 2 || $horizontallyFilledResult -eq 2 ]]
 	then
 		printf "\nComputer Won\n"
 		break

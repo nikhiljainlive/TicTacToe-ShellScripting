@@ -64,6 +64,64 @@ checkOccupiedPosition() {
 	return 1
 }
 
+checkVerticalColumnsFilled() {
+   row=$1
+   playerSymbol=$2
+   column=0
+   filledColumns=0
+   if [[ ${BOARD[$row,$column]} == $playerSymbol ]]
+   then
+      while [[ $column -lt $COLUMNS ]]
+      do
+         if [[ ${BOARD[$row,$column]} != $playerSymbol ]]
+         then
+            break
+         fi
+         (( column++ ))
+         (( filledColumns++ ))
+      done
+   fi
+
+   if [[ $filledColumns -eq $COLUMNS ]]
+   then
+      return 1
+   fi
+   return 0
+}
+
+checkBoardVerticallyFilled() {
+   row=0
+   player1Count=0
+   player2Count=0
+
+   while [[ $row -lt $ROWS ]]
+   do
+      if [[ ${BOARD[$row,$column]} == $INITIAL_SYMBOL ]]
+      then
+         (( row++ ))
+         continue
+      fi
+
+      checkVerticalColumnsFilled $row $PLAYER1_SYMBOL
+      player1Result=$?
+
+      checkVerticalColumnsFilled $row $PLAYER2_SYMBOL
+      player2Result=$?
+
+      if [[ $player1Result -eq 1 ]]
+      then
+         return 1
+      elif [[ $player2Result -eq 1 ]]
+      then
+         return 2
+      fi
+
+      (( row++ ))
+   done
+   return 0
+}
+
+# main
 initBoard
 printBoard
 
@@ -96,4 +154,17 @@ do
 	fi
 	
 	printBoard	
+	checkBoardVerticallyFilled
+	result=$?
+
+	if [[ $result -eq 1 ]]
+	then
+		printf "\nPlayer won\n"
+		echo
+		break
+	elif [[ $result -eq 2 ]]
+	then
+		printf "\nComputer Won\n"
+		break
+	fi
 done

@@ -226,6 +226,22 @@ checkBoardRightDiagonalFilled() {
    return 0
 }
 
+isBoardFull() {
+	for (( row = 0; row < ROWS; row++ ))
+	do
+		for (( column = 0; column < COLUMNS; column++ ))
+		do 
+			checkOccupiedPosition $row $column
+			
+			if [ $? -eq 0 ]
+			then
+				return 0
+			fi
+		done
+	done
+	return 1
+}
+
 # main
 initBoard
 printBoard
@@ -245,6 +261,12 @@ do
  		
 		while :
       do
+			isBoardFull
+			if [ $? -eq 1 ]
+			then
+				break
+			fi
+
          computerRow=$(( $RANDOM % 3 ))
          computerColumn=$(( $RANDOM % 3 ))
 			
@@ -281,6 +303,14 @@ do
 	if [[ $verticallyFilledResult -eq 2 || $horizontallyFilledResult -eq 2 || $leftDiagonalFilledResult -eq 2 || $rightDiagonalFilledResult -eq 2 ]]
 	then
 		printf "\nComputer Won\n"
+		break
+	fi
+
+	isBoardFull
+	
+	if [ $? -eq 1 ]
+	then
+		printf "\nGame Draw\n"
 		break
 	fi
 done

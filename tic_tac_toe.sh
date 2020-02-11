@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/usr/local/bin/bash -x
 
 #This file contains Tic-Tac-Toe Game logic
 
@@ -158,7 +158,6 @@ isLeftDiagonalFilled() {
          (( filledDiagonals++ ))
       done
 
-      echo $playerSymbol Filled Diagonals $filledDiagonals
       if [[ $filledDiagonals -eq 3 ]]
       then
          return 1
@@ -174,6 +173,44 @@ checkBoardLeftDiagonalFilled() {
    player1Result=$?
 
    isLeftDiagonalFilled $PLAYER2_SYMBOL
+   player2Result=$?
+
+   if [[ $player1Result -eq 1 ]]
+   then
+      return 1
+   fi
+
+   if [[ $player2Result -eq 1 ]]
+   then
+      return 2
+   fi
+
+   return 0
+}
+
+isRightDiagonalFilled() {
+   playerSymbol=$1
+   row=0
+   column=$(( $COLUMNS - 1 ))
+
+   while [[ $column -ge 0 && ${BOARD[$row,$column]} == $playerSymbol ]]
+   do
+      (( row++ ))
+      (( column-- ))
+   done
+
+   if [[ $row -eq $ROWS ]]
+   then
+      return 1
+   fi
+   return 0
+}
+
+checkBoardRightDiagonalFilled() {
+   isRightDiagonalFilled $PLAYER1_SYMBOL
+   player1Result=$?
+
+   isRightDiagonalFilled $PLAYER2_SYMBOL
    player2Result=$?
 
    if [[ $player1Result -eq 1 ]]
@@ -231,14 +268,17 @@ do
 	checkBoardLeftDiagonalFilled
 	leftDiagonalFilledResult=$?
 
-	if [[ $verticallyFilledResult -eq 1 || $horizontallyFilledResult -eq 1 || $leftDiagonalFilledResult -eq 1 ]]
+	checkBoardRightDiagonalFilled
+	rightDiagonalFilledResult=$?	
+
+	if [[ $verticallyFilledResult -eq 1 || $horizontallyFilledResult -eq 1 || $leftDiagonalFilledResult -eq 1 || $rightDiagonalFilledResult -eq 1 ]]
 	then
 		printf "\nPlayer won\n"
 		echo
 		break
 	fi
 
-	if [[ $verticallyFilledResult -eq 2 || $horizontallyFilledResult -eq 2 || $leftDiagonalFilledResult -eq 2 ]]
+	if [[ $verticallyFilledResult -eq 2 || $horizontallyFilledResult -eq 2 || $leftDiagonalFilledResult -eq 2 || $rightDiagonalFilledResult -eq 2 ]]
 	then
 		printf "\nComputer Won\n"
 		break

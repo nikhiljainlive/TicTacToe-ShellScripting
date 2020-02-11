@@ -91,8 +91,6 @@ checkVerticalColumnsFilled() {
 
 checkBoardVerticallyFilled() {
    row=0
-   player1Count=0
-   player2Count=0
 
    while [[ $row -lt $ROWS ]]
    do
@@ -150,8 +148,6 @@ checkHorizontalRowsFilled() {
 
 checkBoardHorizontallyFilled() {
    column=0
-   player1Count=0
-   player2Count=0
 
    while [[ $column -lt $COLUMNS ]]
    do

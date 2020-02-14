@@ -5,8 +5,8 @@
 ROWS=3
 COLUMNS=3
 INITIAL_SYMBOL="-"
-PLAYER1_SYMBOL="X"
-PLAYER2_SYMBOL="O"
+PLAYER_SYMBOL="X"
+COMPUTER_SYMBOL="O"
 declare -A BOARD
 
 initBoard() {
@@ -47,9 +47,9 @@ printBoard() {
 fillBoard() {
 	row=$1
 	column=$2
-	mark=$3
+	symbol=$3
 	
-	BOARD[$row,$column]=$mark			
+	BOARD[$row,$column]=$symbol			
 }
 
 checkOccupiedPosition() {
@@ -66,10 +66,10 @@ checkOccupiedPosition() {
 
 checkVerticalColumnsFilled() {
 	row=$1
-	playerSymbol=$2
+	symbol=$2
 	column=0
  
-	while [[ $column -lt $COLUMNS && ${BOARD[$row,$column]} == $playerSymbol ]]
+	while [[ $column -lt $COLUMNS && ${BOARD[$row,$column]} == $symbol ]]
 	do
 		(( column++ ))
 	done
@@ -86,18 +86,18 @@ checkBoardVerticallyFilled() {
 
 	while [[ $row -lt $ROWS ]]
 	do
-		checkVerticalColumnsFilled $row $PLAYER1_SYMBOL
-		player1Result=$?
+		checkVerticalColumnsFilled $row $PLAYER_SYMBOL
+		playerResult=$?
 
-		checkVerticalColumnsFilled $row $PLAYER2_SYMBOL
-		player2Result=$?
+		checkVerticalColumnsFilled $row $COMPUTER_SYMBOL
+		computerResult=$?
 
-		if [[ $player1Result -eq 1 ]]
+		if [[ $playerResult -eq 1 ]]
 		then
 			return 1
 		fi
 
-		if [[ $player2Result -eq 1 ]]
+		if [[ $computerResult -eq 1 ]]
 		then
 			return 2
 		fi
@@ -108,10 +108,10 @@ checkBoardVerticallyFilled() {
 
 checkHorizontalRowsFilled() {
 	column=$1
-	playerSymbol=$2
+	symbol=$2
 	row=0
 
-	while [[ $row -lt $ROWS && ${BOARD[$row,$column]} == $playerSymbol ]]
+	while [[ $row -lt $ROWS && ${BOARD[$row,$column]} == $symbol ]]
 	do
 		(( row++ ))
 	done
@@ -128,17 +128,18 @@ checkBoardHorizontallyFilled() {
 
 	while [[ $column -lt $COLUMNS ]]
 	do
-		checkHorizontalRowsFilled $column $PLAYER1_SYMBOL
-		player1Result=$?
+		checkHorizontalRowsFilled $column $PLAYER_SYMBOL
+		playerResult=$?
 
-		checkHorizontalRowsFilled $column $PLAYER2_SYMBOL
-		player2Result=$?
+		checkHorizontalRowsFilled $column $COMPUTER_SYMBOL
+		computerResult=$?
 
-		if [[ $player1Result -eq 1 ]]
+		if [[ $playerResult -eq 1 ]]
 		then
 			return 1
+		fi
       
-		if [[ $player2Result -eq 1 ]]
+		if [[ $computerResult -eq 1 ]]
 		then
 			return 2
 		fi
@@ -149,12 +150,12 @@ checkBoardHorizontallyFilled() {
 }
 
 isLeftDiagonalFilled() {
-	playerSymbol=$1
+	symbol=$1
 	filledDiagonals=0
 
 	if [[ $ROWS -eq $COLUMNS ]]
 	then
-		while [[ $filledDiagonals -lt $COLUMNS && ${BOARD[$filledDiagonals,$filledDiagonals]} == $playerSymbol ]]
+		while [[ $filledDiagonals -lt $COLUMNS && ${BOARD[$filledDiagonals,$filledDiagonals]} == $symbol ]]
 		do
 			(( filledDiagonals++ ))
 		done
@@ -170,18 +171,18 @@ isLeftDiagonalFilled() {
 }
 
 checkBoardLeftDiagonalFilled() {
-	isLeftDiagonalFilled $PLAYER1_SYMBOL
-	player1Result=$?
+	isLeftDiagonalFilled $PLAYER_SYMBOL
+	playerResult=$?
 
-	isLeftDiagonalFilled $PLAYER2_SYMBOL
-	player2Result=$?
+	isLeftDiagonalFilled $COMPUTER_SYMBOL
+	computerResult=$?
 
-	if [[ $player1Result -eq 1 ]]
+	if [[ $playerResult -eq 1 ]]
 	then
 		return 1
 	fi
 
-	if [[ $player2Result -eq 1 ]]
+	if [[ $computerResult -eq 1 ]]
 	then
 		return 2
 	fi
@@ -190,11 +191,11 @@ checkBoardLeftDiagonalFilled() {
 }
 
 isRightDiagonalFilled() {
-	playerSymbol=$1
+	symbol=$1
 	row=0
 	column=$(( $COLUMNS - 1 ))
 
-	while [[ $column -ge 0 && ${BOARD[$row,$column]} == $playerSymbol ]]
+	while [[ $column -ge 0 && ${BOARD[$row,$column]} == $symbol ]]
 	do
 		(( row++ ))
 		(( column-- ))
@@ -208,18 +209,18 @@ isRightDiagonalFilled() {
 }
 
 checkBoardRightDiagonalFilled() {
-	isRightDiagonalFilled $PLAYER1_SYMBOL
-	player1Result=$?
+	isRightDiagonalFilled $PLAYER_SYMBOL
+	playerResult=$?
 
-	isRightDiagonalFilled $PLAYER2_SYMBOL
-	player2Result=$?
+	isRightDiagonalFilled $COMPUTER_SYMBOL
+	computerResult=$?
 
-	if [[ $player1Result -eq 1 ]]
+	if [[ $playerResult -eq 1 ]]
 	then
 		return 1
 	fi
 
-	if [[ $player2Result -eq 1 ]]
+	if [[ $computerResult -eq 1 ]]
 	then
 		return 2
 	fi
@@ -243,7 +244,7 @@ isBoardFull() {
 	return 1
 }
 
-takePlayerOneInput() {
+takePlayerInput() {
 	while :
 	do
 		read -p "Enter row position : " row
@@ -257,7 +258,7 @@ takePlayerOneInput() {
 			continue
 		fi	
 
-		fillBoard $row $column $PLAYER1_SYMBOL
+		fillBoard $row $column $PLAYER_SYMBOL
 		break
 	done
 }
@@ -277,7 +278,7 @@ takeComputerInput() {
 		
 		echo "Computer Row : $randomRow"
 		echo "Computer Column : $randomColumn"
-		fillBoard $randomRow $randomColumn $PLAYER2_SYMBOL
+		fillBoard $randomRow $randomColumn $COMPUTER_SYMBOL
 		break
 	done
 }
@@ -325,7 +326,7 @@ printBoard
 
 while :
 do	
-	takePlayerOneInput
+	takePlayerInput
 	printBoard
 	checkWinLossOrDraw
  	

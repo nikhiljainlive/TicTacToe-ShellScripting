@@ -242,26 +242,7 @@ isBoardFull() {
 	return 1
 }
 
-# main
-initBoard
-printBoard
-
-while :
-do	
-	read -p "Enter row position : " row
-	read -p "Enter column position : " column
-	
-	checkOccupiedPosition $row $column
-	
-	if [ $? -eq 1 ]
-	then
-		echo Position is already occupied. Try another position!
-		continue
-	fi	
-
-	fillBoard $row $column $PLAYER1_SYMBOL
-
-	printBoard
+checkWinLossOrDraw() {
 	checkBoardVerticallyFilled
 	verticallyFilledResult=$?
 
@@ -278,13 +259,13 @@ do
 	then
 		printf "\nPlayer won\n"
 		echo
-		break
+		return 1
 	fi
 
 	if [[ $verticallyFilledResult -eq 2 || $horizontallyFilledResult -eq 2 || $leftDiagonalFilledResult -eq 2 || $rightDiagonalFilledResult -eq 2 ]]
 	then
 		printf "\nComputer Won\n"
-		break
+		return 1
 	fi
 
 	isBoardFull
@@ -292,9 +273,38 @@ do
 	if [ $? -eq 1 ]
 	then
 		printf "\nGame Draw\n"
+		return 1
+	fi
+
+	return 0
+}
+
+# main
+initBoard
+printBoard
+
+while :
+do	
+	read -p "Enter row position : " row
+	read -p "Enter column position : " column
+	
+	checkOccupiedPosition $row $column
+		
+	if [ $? -eq 1 ]
+	then
+		echo Position is already occupied. Try another position!
+		continue
+	fi	
+
+	fillBoard $row $column $PLAYER1_SYMBOL
+	printBoard
+	checkWinLossOrDraw
+ 	
+	if [ $? -eq 1 ]
+	then
 		break
 	fi
- 		
+	
 	while :
    do
 		randomRow=$(( $RANDOM % 3 ))
@@ -306,42 +316,18 @@ do
 		then
 			continue
 		fi
-	
+		
+		echo "Computer Row : $randomRow"
+		echo "Computer Column : $randomColumn"
 		fillBoard $randomRow $randomColumn $PLAYER2_SYMBOL
 		break
 	done
 
 	printBoard
-	checkBoardVerticallyFilled
-	verticallyFilledResult=$?
+	checkWinLossOrDraw
 
-	checkBoardHorizontallyFilled
-	horizontallyFilledResult=$?
-
-	checkBoardLeftDiagonalFilled
-	leftDiagonalFilledResult=$?
-
-	checkBoardRightDiagonalFilled
-	rightDiagonalFilledResult=$?	
-
-	if [[ $verticallyFilledResult -eq 1 || $horizontallyFilledResult -eq 1 || $leftDiagonalFilledResult -eq 1 || $rightDiagonalFilledResult -eq 1 ]]
-	then
-		printf "\nPlayer won\n"
-		echo
-		break
-	fi
-
-	if [[ $verticallyFilledResult -eq 2 || $horizontallyFilledResult -eq 2 || $leftDiagonalFilledResult -eq 2 || $rightDiagonalFilledResult -eq 2 ]]
-	then
-		printf "\nComputer Won\n"
-		break
-	fi
-
-	isBoardFull
-	
 	if [ $? -eq 1 ]
 	then
-		printf "\nGame Draw\n"
 		break
-	fi
+	fi	
 done

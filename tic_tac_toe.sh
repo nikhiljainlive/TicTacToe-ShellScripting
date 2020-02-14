@@ -247,7 +247,7 @@ initBoard
 printBoard
 
 while :
-do
+do	
 	read -p "Enter row position : " row
 	read -p "Enter column position : " column
 	
@@ -255,31 +255,28 @@ do
 	
 	if [ $? -eq 1 ]
 	then
-		echo Position is already occupied. Try another position!	
-	else
-		fillBoard $row $column $PLAYER1_SYMBOL
+		echo Position is already occupied. Try another position!
+		continue
+	fi	
+
+	fillBoard $row $column $PLAYER1_SYMBOL
  		
-		while :
-      do
-			isBoardFull
-			if [ $? -eq 1 ]
-			then
-				break
-			fi
-
-         computerRow=$(( $RANDOM % 3 ))
-         computerColumn=$(( $RANDOM % 3 ))
+	while :
+   do
+		randomRow=$(( $RANDOM % 3 ))
+		randomColumn=$(( $RANDOM % 3 ))
 			
-			checkOccupiedPosition $computerRow $computerColumn
+		checkOccupiedPosition $randomRow $randomColumn
 
-			if [ $? -eq 0 ]
-         then
-            fillBoard $computerRow $computerColumn $PLAYER2_SYMBOL
-            break
-         fi
-      done
-	fi
+		if [ $? -eq 1 ]
+		then
+			continue
+		fi
 	
+		fillBoard $randomRow $randomColumn $PLAYER2_SYMBOL
+		break
+	done
+
 	printBoard
 	checkBoardVerticallyFilled
 	verticallyFilledResult=$?

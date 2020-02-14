@@ -65,24 +65,24 @@ checkOccupiedPosition() {
 }
 
 checkVerticalColumnsFilled() {
-   row=$1
-   playerSymbol=$2
-   column=0
+	row=$1
+	playerSymbol=$2
+	column=0
  
 	while [[ $column -lt $COLUMNS && ${BOARD[$row,$column]} == $playerSymbol ]]
 	do
 		(( column++ ))
 	done
 
-   if [[ $column -eq $COLUMNS ]]
-   then
-      return 1
-   fi
-   return 0
+	if [[ $column -eq $COLUMNS ]]
+	then
+		return 1
+	fi
+	return 0
 }
 
 checkBoardVerticallyFilled() {
-   row=0
+	row=0
 
 	while [[ $row -lt $ROWS ]]
 	do
@@ -101,129 +101,130 @@ checkBoardVerticallyFilled() {
 		then
 			return 2
 		fi
-      (( row++ ))
-   done
+		(( row++ ))
+	done
    return 0
 }
 
 checkHorizontalRowsFilled() {
-   column=$1
-   playerSymbol=$2
-   row=0
+	column=$1
+	playerSymbol=$2
+	row=0
 
 	while [[ $row -lt $ROWS && ${BOARD[$row,$column]} == $playerSymbol ]]
 	do
 		(( row++ ))
 	done
 
-   if [[ $row -eq $ROWS ]]
-   then
-      return 1
-   fi
-   return 0
+	if [[ $row -eq $ROWS ]]
+	then
+		return 1
+	fi
+	return 0
 }
 
 checkBoardHorizontallyFilled() {
-   column=0
+	column=0
 
-   while [[ $column -lt $COLUMNS ]]
-   do
-      checkHorizontalRowsFilled $column $PLAYER1_SYMBOL
-      player1Result=$?
+	while [[ $column -lt $COLUMNS ]]
+	do
+		checkHorizontalRowsFilled $column $PLAYER1_SYMBOL
+		player1Result=$?
 
-      checkHorizontalRowsFilled $column $PLAYER2_SYMBOL
-      player2Result=$?
+		checkHorizontalRowsFilled $column $PLAYER2_SYMBOL
+		player2Result=$?
 
-      if [[ $player1Result -eq 1 ]]
-      then
-         return 1
-      elif [[ $player2Result -eq 1 ]]
-      then
-         return 2
-      fi
+		if [[ $player1Result -eq 1 ]]
+		then
+			return 1
+      
+		if [[ $player2Result -eq 1 ]]
+		then
+			return 2
+		fi
 
-      (( column++ ))
-   done
-   return 0
+		(( column++ ))
+	done
+	return 0
 }
 
 isLeftDiagonalFilled() {
-   playerSymbol=$1
-   filledDiagonals=0
+	playerSymbol=$1
+	filledDiagonals=0
 
-   if [[ $ROWS -eq $COLUMNS ]]
-   then
-      while [[ $filledDiagonals -lt $COLUMNS && ${BOARD[$filledDiagonals,$filledDiagonals]} == $playerSymbol ]]
-      do
-         (( filledDiagonals++ ))
-      done
+	if [[ $ROWS -eq $COLUMNS ]]
+	then
+		while [[ $filledDiagonals -lt $COLUMNS && ${BOARD[$filledDiagonals,$filledDiagonals]} == $playerSymbol ]]
+		do
+			(( filledDiagonals++ ))
+		done
 
-      if [[ $filledDiagonals -eq 3 ]]
-      then
-         return 1
-      fi
-      return 0
-   fi
+		if [[ $filledDiagonals -eq 3 ]]
+		then
+			return 1
+		fi
+		return 0
+	fi
 
-   return 0
+	return 0
 }
 
 checkBoardLeftDiagonalFilled() {
-   isLeftDiagonalFilled $PLAYER1_SYMBOL
-   player1Result=$?
+	isLeftDiagonalFilled $PLAYER1_SYMBOL
+	player1Result=$?
 
-   isLeftDiagonalFilled $PLAYER2_SYMBOL
-   player2Result=$?
+	isLeftDiagonalFilled $PLAYER2_SYMBOL
+	player2Result=$?
 
-   if [[ $player1Result -eq 1 ]]
-   then
-      return 1
-   fi
+	if [[ $player1Result -eq 1 ]]
+	then
+		return 1
+	fi
 
-   if [[ $player2Result -eq 1 ]]
-   then
-      return 2
-   fi
+	if [[ $player2Result -eq 1 ]]
+	then
+		return 2
+	fi
 
-   return 0
+	return 0
 }
 
 isRightDiagonalFilled() {
-   playerSymbol=$1
-   row=0
-   column=$(( $COLUMNS - 1 ))
+	playerSymbol=$1
+	row=0
+	column=$(( $COLUMNS - 1 ))
 
-   while [[ $column -ge 0 && ${BOARD[$row,$column]} == $playerSymbol ]]
-   do
-      (( row++ ))
-      (( column-- ))
-   done
+	while [[ $column -ge 0 && ${BOARD[$row,$column]} == $playerSymbol ]]
+	do
+		(( row++ ))
+		(( column-- ))
+	done
 
-   if [[ $row -eq $ROWS ]]
-   then
-      return 1
-   fi
-   return 0
+	if [[ $row -eq $ROWS ]]
+	then
+		return 1
+	fi
+	return 0
 }
 
 checkBoardRightDiagonalFilled() {
-   isRightDiagonalFilled $PLAYER1_SYMBOL
-   player1Result=$?
+	isRightDiagonalFilled $PLAYER1_SYMBOL
+	player1Result=$?
 
-   isRightDiagonalFilled $PLAYER2_SYMBOL
-   player2Result=$?
+	isRightDiagonalFilled $PLAYER2_SYMBOL
+	player2Result=$?
 
-   if [[ $player1Result -eq 1 ]]
-   then
-      return 1
-   fi
+	if [[ $player1Result -eq 1 ]]
+	then
+		return 1
+	fi
 
-   if [[ $player2Result -eq 1 ]]
-   then
-      return 2
-   fi
+	if [[ $player2Result -eq 1 ]]
+	then
+		return 2
+	fi
 
-   return 0
+	return 0
 }
 
 isBoardFull() {
@@ -263,7 +264,7 @@ takePlayerOneInput() {
 
 takeComputerInput() {
 	while :
-   do
+	do
 		randomRow=$(( $RANDOM % 3 ))
 		randomColumn=$(( $RANDOM % 3 ))
 			

@@ -242,6 +242,25 @@ isBoardFull() {
 	return 1
 }
 
+takePlayerOneInput() {
+	while :
+	do
+		read -p "Enter row position : " row
+		read -p "Enter column position : " column
+	
+		checkOccupiedPosition $row $column
+		
+		if [ $? -eq 1 ]
+		then
+			echo Position is already occupied. Try another position!
+			continue
+		fi	
+
+		fillBoard $row $column $PLAYER1_SYMBOL
+		break
+	done
+}
+
 checkWinLossOrDraw() {
 	checkBoardVerticallyFilled
 	verticallyFilledResult=$?
@@ -285,18 +304,7 @@ printBoard
 
 while :
 do	
-	read -p "Enter row position : " row
-	read -p "Enter column position : " column
-	
-	checkOccupiedPosition $row $column
-		
-	if [ $? -eq 1 ]
-	then
-		echo Position is already occupied. Try another position!
-		continue
-	fi	
-
-	fillBoard $row $column $PLAYER1_SYMBOL
+	takePlayerOneInput
 	printBoard
 	checkWinLossOrDraw
  	

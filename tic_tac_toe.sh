@@ -261,6 +261,26 @@ takePlayerOneInput() {
 	done
 }
 
+takeComputerInput() {
+	while :
+   do
+		randomRow=$(( $RANDOM % 3 ))
+		randomColumn=$(( $RANDOM % 3 ))
+			
+		checkOccupiedPosition $randomRow $randomColumn
+
+		if [ $? -eq 1 ]
+		then
+			continue
+		fi
+		
+		echo "Computer Row : $randomRow"
+		echo "Computer Column : $randomColumn"
+		fillBoard $randomRow $randomColumn $PLAYER2_SYMBOL
+		break
+	done
+}
+
 checkWinLossOrDraw() {
 	checkBoardVerticallyFilled
 	verticallyFilledResult=$?
@@ -312,25 +332,8 @@ do
 	then
 		break
 	fi
-	
-	while :
-   do
-		randomRow=$(( $RANDOM % 3 ))
-		randomColumn=$(( $RANDOM % 3 ))
-			
-		checkOccupiedPosition $randomRow $randomColumn
 
-		if [ $? -eq 1 ]
-		then
-			continue
-		fi
-		
-		echo "Computer Row : $randomRow"
-		echo "Computer Column : $randomColumn"
-		fillBoard $randomRow $randomColumn $PLAYER2_SYMBOL
-		break
-	done
-
+	takeComputerInput
 	printBoard
 	checkWinLossOrDraw
 

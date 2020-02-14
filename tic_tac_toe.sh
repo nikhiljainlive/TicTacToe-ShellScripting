@@ -260,6 +260,40 @@ do
 	fi	
 
 	fillBoard $row $column $PLAYER1_SYMBOL
+
+	printBoard
+	checkBoardVerticallyFilled
+	verticallyFilledResult=$?
+
+	checkBoardHorizontallyFilled
+	horizontallyFilledResult=$?
+
+	checkBoardLeftDiagonalFilled
+	leftDiagonalFilledResult=$?
+
+	checkBoardRightDiagonalFilled
+	rightDiagonalFilledResult=$?	
+
+	if [[ $verticallyFilledResult -eq 1 || $horizontallyFilledResult -eq 1 || $leftDiagonalFilledResult -eq 1 || $rightDiagonalFilledResult -eq 1 ]]
+	then
+		printf "\nPlayer won\n"
+		echo
+		break
+	fi
+
+	if [[ $verticallyFilledResult -eq 2 || $horizontallyFilledResult -eq 2 || $leftDiagonalFilledResult -eq 2 || $rightDiagonalFilledResult -eq 2 ]]
+	then
+		printf "\nComputer Won\n"
+		break
+	fi
+
+	isBoardFull
+	
+	if [ $? -eq 1 ]
+	then
+		printf "\nGame Draw\n"
+		break
+	fi
  		
 	while :
    do
